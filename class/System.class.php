@@ -46,7 +46,7 @@ class Sys
 			return FALSE;
 	}
 
-	//проверяем есть ли на конце пути /
+	//проверяем есть ли на конце пути / или \
 	public static function checkPath($path)
 	{
 		$path=trim($path);
@@ -213,7 +213,7 @@ class Sys
 		return $name;
 	}
 	
-	//созраняем torrent файл
+	//сохраняем torrent файл
 	public static function saveTorrent($tracker, $name, $torrent, $id, $hash)
 	{
     	$file = '['.$tracker.']_'.$name.'.torrent';
