@@ -46,14 +46,17 @@ class Sys
 			return FALSE;
 	}
 
-	//проверяем есть ли на конце пути /
+	//проверяем есть ли на конце пути / или \
 	public static function checkPath($path)
 	{
-		if (substr($path, -1) == '/')
-			$path = $path;
-		else
-			$path = $path.'/';
-		return $path;
+		$path=trim($path);
+		$dirseppath=substr($path, -1);
+		
+		if ($dirseppath == '/' or $dirseppath == '\\' ){
+			return $path;
+		}else{
+			return $path.DIRECTORY_SEPARATOR;
+		}
 	}
 	
 	//проверка на возхможность записи в директорию
@@ -210,7 +213,7 @@ class Sys
 		return $name;
 	}
 	
-	//созраняем torrent файл
+	//сохраняем torrent файл
 	public static function saveTorrent($tracker, $name, $torrent, $id, $hash)
 	{
     	$file = '['.$tracker.']_'.$name.'.torrent';
@@ -220,45 +223,4 @@ class Sys
         $useTorrent = Database::getSetting('useTorrent');
         if ($useTorrent)
         {
-            $torrentClient = Database::getSetting('torrentClient');
-            
-            $dir = dirname(__FILE__).'/';
-            include_once $dir.$torrentClient.'.class.php';
-            call_user_func($torrentClient.'::addNew', $id, $path, $hash, $tracker);
-            
-            $deleteTorrent = Database::getSetting('deleteTorrent');
-            if ($deleteTorrent)
-                unlink($path);
-        }
-	}
-	
-	//преобразуем месяц из числового в текстовый
-	public static function dateNumToString($date)
-	{
-	    $monthes_num = array('/10/', '/11/', '/12/', '/0?1/', '/0?2/', '/0?3/', '/0?4/', '/0?5/', '/0?6/', '/0?7/', '/0?8/', '/0?9/');
-	    $monthes_ru = array('Окт', 'Ноя', 'Дек', 'Янв', 'Фев', 'Мар', 'Апр', 'Мая', 'Июн', 'Июл', 'Авг', 'Сен');
-	    $month = preg_replace($monthes_num, $monthes_ru, $date);
-	    
-	    return $month;
-	}
-	
-	//преобразуем месяц из текстового в числовый
-	public static function dateStringToNum($date)
-	{
-	    $monthes = array('/янв|Янв|Jan/i', '/фев|Фев|Feb/i', '/мар|Мар|Mar/i', '/апр|Апр|Apr/i', '/мая|май|Мая|мая|May/i', '/июн|Июн|Jun/i', '/июл|Июл|Jul/i', '/авг|Авг|Aug/i', '/сен|Сен|Sep/i', '/окт|Окт|Oct/i', '/ноя|Ноя|Nov/i', '/дек|Дек|Dec/i');
-	    $monthes_num = array('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12');
-	    $month = preg_replace($monthes, $monthes_num, $date);
-	    
-	    return $month;
-	}
-	
-	//записываем время последнего запуска системы
-	public static function lastStart()
-	{
-        $dir = dirname(__FILE__);
-		$dir = str_replace('class', '', $dir);	   
-		$date = date('d-m-Y H:i:s');
-		file_put_contents($dir.'/laststart.txt', $date);
-	}
-}
-?>
+            $torrentClient = Database::getSetting('
